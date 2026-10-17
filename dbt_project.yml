@@ -1,0 +1,37 @@
+name: token_revenue
+version: "3.0.0"
+config-version: 2
+profile: token_revenue
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+
+vars:
+  billing_period: "2026-09"
+  billing_cutoff: "2026-10-01 06:00:00"   # usage ingested after this missed the month-end billing run
+  as_of_date: "2026-11-05"                # the date the monitor runs "as of"; drives past-due aging
+  partner_utc_offset_hours: 7             # Pacific (PDT) cutoff used by one partner's settlement
+  haiku_long_prompt_threshold: 100000     # Claude Haiku 5.5 prompts over this pay long-context rates
+  batch_multiplier: 0.5                   # Batch API: 50% off
+  us_geo_multiplier: 1.1                  # inference_geo = "us" on Claude 4.6+ models
+  web_search_usd: 0.01                    # $10 per 1,000 searches
+  code_min_seconds: 300                   # 5-minute minimum per execution
+  code_free_hours: 1550                   # free container-hours per org per month
+  code_usd_per_hour: 0.05
+  ccu_usd: 0.01                           # Claude Consumption Unit
+  tolerance: 0.05                         # differences at or below this are rounding, not errors
+
+seeds:
+  token_revenue:
+    +column_types:
+      org_id: varchar
+
+models:
+  token_revenue:
+    staging:
+      +materialized: view
+    intermediate:
+      +materialized: view
+    marts:
+      +materialized: table

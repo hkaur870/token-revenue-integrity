@@ -1,0 +1,42 @@
+name: Daily revenue integrity monitor
+
+on:
+  schedule:
+    - cron: "0 12 * * *"      # every day at 12:00 UTC
+  workflow_dispatch:           # run by hand from the Actions tab
+  push:
+    branches: [main]
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Generate ~1M synthetic API requests
+        run: python scripts/generate_data.py --requests 1000000
+
+      - name: Load, build models, run data tests
+        run: dbt build --profiles-dir .
+
+      - name: Write revenue integrity report
+        run: python scripts/build_report.py
+
+      - name: Claude summary for Finance (runs only if the secret is set)
+        if: env.ANTHROPIC_API_KEY != ''
+        run: python scripts/explain_exceptions.py
+
+      - name: Save reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: revenue-integrity-reports
+          path: reports/

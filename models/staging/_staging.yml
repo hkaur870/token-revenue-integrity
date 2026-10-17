@@ -1,0 +1,67 @@
+version: 2
+
+models:
+  - name: stg_api_requests
+    description: Raw metering records, one per API request. Duplicates are expected and handled downstream.
+    columns:
+      - name: request_id
+        data_tests:
+          - not_null
+          - unique:
+              config:
+                severity: warn   # metering retries; reported by the monitor
+      - name: org_id
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('stg_orgs')
+              field: org_id
+      - name: service_tier
+        data_tests:
+          - accepted_values:
+              values: ['standard', 'batch', 'fast']
+      - name: inference_geo
+        data_tests:
+          - accepted_values:
+              values: ['global', 'us']
+      - name: status
+        data_tests:
+          - accepted_values:
+              values: ['succeeded', 'failed']
+
+  - name: stg_orgs
+    columns:
+      - name: org_id
+        data_tests: [unique, not_null]
+      - name: segment
+        data_tests:
+          - accepted_values:
+              values: ['enterprise_invoiced', 'self_serve_prepaid', 'cloud_marketplace']
+
+  - name: stg_invoices
+    columns:
+      - name: invoice_id
+        data_tests: [unique, not_null]
+
+  - name: stg_credit_lots
+    columns:
+      - name: lot_id
+        data_tests: [unique, not_null]
+      - name: lot_type
+        data_tests:
+          - accepted_values:
+              values: ['purchased', 'included']
+
+  - name: stg_credit_ledger
+    columns:
+      - name: entry_id
+        data_tests: [unique, not_null]
+      - name: entry_type
+        data_tests:
+          - accepted_values:
+              values: ['grant', 'purchase', 'consumption', 'expiration']
+
+  - name: stg_partner_settlements
+    columns:
+      - name: settlement_id
+        data_tests: [unique, not_null]

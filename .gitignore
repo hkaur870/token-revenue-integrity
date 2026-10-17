@@ -1,0 +1,9 @@
+*.duckdb
+*.duckdb.wal
+target/
+dbt_packages/
+logs/
+.venv/
+__pycache__/
+data/raw/*.csv
+.streamlit/secrets.toml

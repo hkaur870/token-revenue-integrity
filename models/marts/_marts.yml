@@ -1,0 +1,44 @@
+version: 2
+
+models:
+  - name: recon_usage_to_invoice
+    description: >
+      Invoiced customers: expected charges vs. invoice lines (per model, web search, code execution),
+      with the most likely cause of each mismatch.
+    columns:
+      - name: status
+        data_tests:
+          - accepted_values:
+              values: ['matched', 'under_billed', 'over_billed', 'not_invoiced']
+  - name: recon_partner_settlements
+    description: Metered usage vs. partner CCU settlements for Claude Platform on AWS and Microsoft Foundry.
+  - name: recon_prepaid_usage_to_ledger
+    description: Prepaid customers' rated usage vs. credits drawn down, including usage served with no credit.
+  - name: recon_credit_lots
+    description: Roll-forward and expiry checks for every prepaid credit lot.
+  - name: deferred_revenue_rollforward
+    description: Deferred revenue from purchased credits (opening, purchases, recognized, breakage, closing); included credits as a memo.
+  - name: recon_invoice_to_payment
+    description: Each invoice with amount collected, open balance, and past-due flag.
+    columns:
+      - name: invoice_id
+        data_tests: [unique, not_null]
+  - name: recon_billing_to_gl
+    description: Invoiced amounts vs. revenue booked in the general ledger.
+  - name: billing_exceptions
+    description: Every issue found, with domain, severity, dollars at risk, direction, and likely cause.
+    columns:
+      - name: exception_type
+        data_tests: [not_null]
+      - name: amount_at_risk
+        data_tests: [not_null]
+  - name: billing_summary
+    description: Top-line revenue integrity metrics, including leakage and overcharges in basis points of usage.
+  - name: mart_daily_usage
+    description: Daily requests, tokens, and expected revenue by model and segment.
+  - name: mart_pricing_levers
+    description: Revenue effect of each pricing lever (batch, caching, US-only inference, fast mode, long-prompt pricing).
+  - name: mart_subscription_economics
+    description: Claude plan price vs. API-list-price value of included usage, by plan.
+  - name: mart_usage_cap_scenarios
+    description: What-if usage caps at 3x, 5x, 10x, and 20x plan price.

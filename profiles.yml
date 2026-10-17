@@ -1,0 +1,7 @@
+token_revenue:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: token_revenue.duckdb
+      threads: 4
