@@ -2,7 +2,7 @@
 
 **A dbt + DuckDB pipeline that rates every API request at Anthropic's public list prices, reconciles every way customers pay (invoices, prepaid credits, cloud partners), and traces each billing error to the specific pricing rule that caused it.**
 
-**[Live dashboard](https://YOUR-APP.streamlit.app)** · [Business case](docs/business_case.md) · [Monthly report](reports/revenue_integrity_report.md) · [Sources & assumptions](docs/sources.md)
+[Business case](docs/business_case.md) · [Monthly report](reports/revenue_integrity_report.md) · [Sources & assumptions](docs/sources.md)
 
 > At a $65B+ revenue run rate, every basis point of billing error is about **$6.5M a year**. Token pricing has many rules that stack on one request: five token categories per model, model-specific cache rates, long-prompt tiers, batch discounts, US-only inference, fast mode, and tool fees. Customers pay through prepaid credits, monthly invoices, or cloud marketplaces. This project is the data foundation that keeps all of it accurate.
 
